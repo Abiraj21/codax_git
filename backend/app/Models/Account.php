@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    public function signals() {
+    protected $fillable = ['name'];
+
+    public function signals()
+    {
         return $this->hasMany(Signal::class);
     }
 }
