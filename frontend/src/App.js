@@ -80,13 +80,13 @@ function App() {
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             {selectedAccount
-              ? `Showing active signals for ${selectedAccount.name}. Click the account again to deselect.`
+              ? `Showing signals for ${selectedAccount.name}. Click the account name again to deselect.`
               : "Select an account from the sidebar to filter, or view all signals here."}
           </p>
         </div>
 
         {/* Form to create signals */}
-        <SignalForm accounts={accounts} onSignalCreated={loadSignals} />
+        <SignalForm accounts={accounts} onSignalCreated={loadSignals} selectedAccount={selectedAccount} />
 
         {/* Signal list */}
         {loadingSignals ? (

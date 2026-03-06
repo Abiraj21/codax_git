@@ -79,11 +79,14 @@ function SignalList({ signals, onArchive, filterType, filterStatus, onFilterType
                                 {signal.type}
                             </span>
 
-                            {/* Payload */}
+                            {/* Payload & Timestamp */}
                             <div className="flex-1 min-w-0">
                                 <code className="text-xs text-gray-600 bg-gray-50 rounded px-2 py-1 break-all">
                                     {JSON.stringify(signal.payload)}
                                 </code>
+                                <div className="mt-1 text-[10px] text-gray-400">
+                                    {new Date(signal.created_at).toLocaleString()}
+                                </div>
                             </div>
 
                             {/* Status badge */}
