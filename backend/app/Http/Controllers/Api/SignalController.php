@@ -12,7 +12,6 @@ class SignalController extends Controller
     {
         return response()->json(
             Signal::where('account_id', $id)
-                ->where('status', 'active')
                 ->get()
         );
     }

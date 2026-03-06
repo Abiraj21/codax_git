@@ -3,12 +3,19 @@ import axios from "axios";
 
 const SIGNAL_TYPES = ["intent", "web_visit", "purchase"];
 
-function SignalForm({ accounts, onSignalCreated }) {
+function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
     const [form, setForm] = useState({
         account_id: "",
         type: "intent",
         payload: '{"page": "home"}',
     });
+
+    // Auto-select account if provided via props
+    React.useEffect(() => {
+        if (selectedAccount) {
+            setForm((prev) => ({ ...prev, account_id: selectedAccount.id.toString() }));
+        }
+    }, [selectedAccount]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -39,7 +46,11 @@ function SignalForm({ accounts, onSignalCreated }) {
             });
             setSuccess("Signal created successfully!");
             onSignalCreated();
-            setForm({ account_id: "", type: "intent", payload: '{"page": "home"}' });
+            setForm({
+                account_id: selectedAccount ? selectedAccount.id.toString() : "",
+                type: "intent",
+                payload: '{"page": "home"}',
+            });
         } catch (err) {
             setError(
                 err.response?.data?.message ||
