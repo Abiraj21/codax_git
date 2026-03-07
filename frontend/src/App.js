@@ -4,6 +4,7 @@ import Sidebar from "./components/sidebar";
 import Header from "./components/Header";
 import SignalForm from "./components/signalForm";
 import SignalList from "./components/signalList";
+import Visuals from "./components/Visuals";
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import toast, { Toaster } from 'react-hot-toast';
@@ -30,6 +31,7 @@ function dedupeById(arr) {
 }
 
 function App() {
+  const [activeTab, setActiveTab] = useState('home');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [signals, setSignals] = useState([]);
@@ -160,6 +162,8 @@ function App() {
         onSearchChange={setSearchQuery}
         selectedAccount={selectedAccount}
         onSelectAccount={handleSelectAccount}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
       />
 
       {/* Main Content Area */}
@@ -190,30 +194,37 @@ function App() {
               </p>
             </div>
 
-            {/* Signal Creation Form */}
-            <SignalForm
-              accounts={accounts}
-              onSignalCreated={loadSignals}
-              selectedAccount={selectedAccount}
-            />
+            {/* Main Tabs Logic */}
+            {activeTab === 'home' ? (
+              <>
+                {/* Signal Creation Form */}
+                <SignalForm
+                  accounts={accounts}
+                  onSignalCreated={loadSignals}
+                  selectedAccount={selectedAccount}
+                />
 
-            {/* Signal List */}
-            {loadingSignals ? (
-              <div className="card px-6 py-16 text-center">
-                <div className="flex items-center justify-center gap-3 text-slate-400 text-sm">
-                  <div className="w-5 h-5 border-2 border-signal-400 border-t-transparent rounded-full animate-spin"></div>
-                  Loading signals…
-                </div>
-              </div>
+                {/* Signal List */}
+                {loadingSignals ? (
+                  <div className="card px-6 py-16 text-center">
+                    <div className="flex items-center justify-center gap-3 text-slate-400 text-sm">
+                      <div className="w-5 h-5 border-2 border-signal-400 border-t-transparent rounded-full animate-spin"></div>
+                      Loading signals…
+                    </div>
+                  </div>
+                ) : (
+                  <SignalList
+                    signals={displayedSignals}
+                    onArchive={loadSignals}
+                    filterType={filterType}
+                    filterStatus={filterStatus}
+                    onFilterTypeChange={setFilterType}
+                    onFilterStatusChange={setFilterStatus}
+                  />
+                )}
+              </>
             ) : (
-              <SignalList
-                signals={displayedSignals}
-                onArchive={loadSignals}
-                filterType={filterType}
-                filterStatus={filterStatus}
-                onFilterTypeChange={setFilterType}
-                onFilterStatusChange={setFilterStatus}
-              />
+              <Visuals signals={displayedSignals} accounts={accounts} />
             )}
 
           </div>
