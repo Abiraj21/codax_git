@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaBolt, FaSearch, FaCog, FaUserEdit, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaBolt, FaSearch, FaUserCircle, FaUserEdit, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { HiOutlineChartBar } from "react-icons/hi";
 
 function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onSelectAccount }) {
@@ -101,7 +101,7 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                             }`}
                         title="Settings"
                     >
-                        <FaCog className={`text-sm transition-transform duration-300 ${dropdownOpen ? "rotate-90" : ""}`} />
+                        <FaUserCircle className={`text-sm transition-transform duration-300 ${dropdownOpen ? "text-signal-500" : ""}`} />
                     </button>
 
                     {/* Dropdown Menu */}

@@ -4,6 +4,21 @@ import Sidebar from "./components/sidebar";
 import Header from "./components/Header";
 import SignalForm from "./components/signalForm";
 import SignalList from "./components/signalList";
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+import toast, { Toaster } from 'react-hot-toast';
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+  broadcaster: 'reverb',
+  key: "s1chube6wkxw4fggrpua",
+  wsHost: "localhost",
+  wsPort: 8080,
+  wssPort: 8080,
+  forceTLS: false,
+  enabledTransports: ['ws', 'wss'],
+});
 
 const API = "http://localhost:8000/api";
 
@@ -72,6 +87,47 @@ function App() {
     return cleanup;
   }, [loadSignals]);
 
+  // Listen for real-time broadcasts
+  useEffect(() => {
+    const channel = window.Echo.channel('signals');
+
+    channel.listen('SignalCreated', (e) => {
+      toast.success('New Signal Received!', {
+        style: {
+          borderRadius: '12px',
+          background: '#1e293b',
+          color: '#f8fafc',
+          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        },
+        iconTheme: {
+          primary: '#10b981',
+          secondary: '#1e293b',
+        },
+      });
+      loadSignals();
+    });
+
+    channel.listen('SignalArchived', (e) => {
+      toast.success('Signal Archived.', {
+        style: {
+          borderRadius: '12px',
+          background: '#1e293b',
+          color: '#f8fafc',
+          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        },
+        iconTheme: {
+          primary: '#8b5cf6',
+          secondary: '#1e293b',
+        },
+      });
+      loadSignals();
+    });
+
+    return () => {
+      window.Echo.leaveChannel('signals');
+    };
+  }, [loadSignals]);
+
   const handleSelectAccount = (account) => {
     setSelectedAccount((prev) => (prev?.id === account.id ? null : account));
     setFilterType("");
@@ -94,23 +150,24 @@ function App() {
     : signals;
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans">
+    <div className="flex flex-col h-screen bg-slate-50 font-sans">
+      <Toaster position="bottom-right" reverseOrder={false} />
 
-      {/* Sidebar */}
-      <Sidebar
-        accounts={accounts}
+      {/* ─── New Premium Header ─────────────────── */}
+      <Header
+        signalCount={signals.length}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
         selectedAccount={selectedAccount}
         onSelectAccount={handleSelectAccount}
       />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden">
 
-        {/* ─── New Premium Header ─────────────────── */}
-        <Header
-          signalCount={signals.length}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
+        {/* Sidebar */}
+        <Sidebar
+          accounts={accounts}
           selectedAccount={selectedAccount}
           onSelectAccount={handleSelectAccount}
         />

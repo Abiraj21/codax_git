@@ -4,7 +4,7 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 
 function Sidebar({ accounts, selectedAccount, onSelectAccount }) {
     return (
-        <aside className="w-64 bg-white border-r border-slate-200 shadow-sidebar min-h-screen flex flex-col">
+        <aside className="w-64 bg-white border-r border-slate-200 shadow-sidebar h-full flex flex-col">
 
             {/* ─── Account Navigation ────────────────── */}
             <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">

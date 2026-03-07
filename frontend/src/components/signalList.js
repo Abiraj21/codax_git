@@ -4,6 +4,7 @@ import {
     FaFilter, FaArchive, FaClock,
     FaChevronDown, FaChevronUp, FaCopy, FaInbox
 } from "react-icons/fa";
+import toast from 'react-hot-toast';
 
 const TYPE_CONFIG = {
     intent: {
@@ -64,9 +65,11 @@ function SignalList({
         setArchiving(id);
         try {
             await axios.patch(`http://localhost:8000/api/signals/${id}/archive`);
+            toast.success("Signal successfully archived!");
             onArchive();
         } catch (err) {
             console.error("Archive failed:", err);
+            toast.error("Failed to archive signal.");
         } finally {
             setArchiving(null);
         }
