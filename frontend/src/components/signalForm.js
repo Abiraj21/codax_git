@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { FaBolt, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { HiOutlinePlusCircle } from "react-icons/hi";
 
 const SIGNAL_TYPES = ["intent", "web_visit", "purchase"];
+
+const TYPE_META = {
+    intent: { icon: "🎯", label: "Intent" },
+    web_visit: { icon: "🌐", label: "Web Visit" },
+    purchase: { icon: "💰", label: "Purchase" },
+};
 
 function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
     const [form, setForm] = useState({
@@ -10,12 +18,12 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
         payload: '{"page": "home"}',
     });
 
-    // Auto-select account if provided via props
     React.useEffect(() => {
         if (selectedAccount) {
             setForm((prev) => ({ ...prev, account_id: selectedAccount.id.toString() }));
         }
     }, [selectedAccount]);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -51,98 +59,124 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
                 type: "intent",
                 payload: '{"page": "home"}',
             });
+            // Auto-clear success message
+            setTimeout(() => setSuccess(""), 4000);
         } catch (err) {
-            setError(
-                err.response?.data?.message ||
-                "Failed to create signal. Check console."
-            );
+            setError(err.response?.data?.message || "Failed to create signal.");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="bg-white rounded-xl shadow p-6 mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                ➕ Create New Signal
-            </h3>
+        <div className="card mb-6 overflow-hidden">
+            {/* Gradient top accent bar */}
+            <div className="h-1 w-full bg-gradient-to-r from-signal-500 via-brand-500 to-signal-400" />
 
-            {error && (
-                <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                    {error}
-                </div>
-            )}
-            {success && (
-                <div className="mb-3 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
-                    {success}
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Account */}
-                <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                        Account
-                    </label>
-                    <select
-                        name="account_id"
-                        value={form.account_id}
-                        onChange={handleChange}
-                        required
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    >
-                        <option value="">Select account…</option>
-                        {accounts.map((a) => (
-                            <option key={a.id} value={a.id}>
-                                {a.name}
-                            </option>
-                        ))}
-                    </select>
+            <div className="px-6 py-5">
+                {/* Section Header */}
+                <div className="section-header">
+                    <div className="section-header-icon">
+                        <HiOutlinePlusCircle className="text-white text-lg" />
+                    </div>
+                    <div>
+                        <h3 className="text-base font-bold text-slate-900">Create New Signal</h3>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                            Select an account, choose a signal type, and define the payload.
+                        </p>
+                    </div>
                 </div>
 
-                {/* Type */}
-                <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                        Signal Type
-                    </label>
-                    <select
-                        name="type"
-                        value={form.type}
-                        onChange={handleChange}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    >
-                        {SIGNAL_TYPES.map((t) => (
-                            <option key={t} value={t}>
-                                {t}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {/* Alerts */}
+                {error && (
+                    <div className="mb-4 flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm fade-up">
+                        <FaExclamationCircle className="text-red-500 flex-shrink-0 mt-0.5" />
+                        {error}
+                    </div>
+                )}
+                {success && (
+                    <div className="mb-4 flex items-start gap-2.5 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm fade-up">
+                        <FaCheckCircle className="text-emerald-500 flex-shrink-0 mt-0.5" />
+                        {success}
+                    </div>
+                )}
 
-                {/* Payload */}
-                <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1">
-                        Payload (JSON)
-                    </label>
-                    <input
-                        name="payload"
-                        value={form.payload}
-                        onChange={handleChange}
-                        placeholder='{"key": "value"}'
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                    />
-                </div>
+                {/* Form */}
+                <form onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-                <div className="md:col-span-3 flex justify-end">
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                    >
-                        {loading ? "Creating…" : "Create Signal"}
-                    </button>
-                </div>
-            </form>
+                        {/* Account */}
+                        <div>
+                            <label className="input-label">Account</label>
+                            <select
+                                name="account_id"
+                                value={form.account_id}
+                                onChange={handleChange}
+                                required
+                                className="input-field"
+                            >
+                                <option value="">Select account…</option>
+                                {accounts.map((a) => (
+                                    <option key={a.id} value={a.id}>{a.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Signal Type */}
+                        <div>
+                            <label className="input-label">Signal Type</label>
+                            <select
+                                name="type"
+                                value={form.type}
+                                onChange={handleChange}
+                                className="input-field"
+                            >
+                                {SIGNAL_TYPES.map((t) => (
+                                    <option key={t} value={t}>
+                                        {TYPE_META[t]?.icon} {TYPE_META[t]?.label || t}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Payload */}
+                        <div>
+                            <label className="input-label">Payload (JSON)</label>
+                            <input
+                                name="payload"
+                                value={form.payload}
+                                onChange={handleChange}
+                                placeholder='{"key": "value"}'
+                                className="input-field font-mono"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Submit */}
+                    <div className="mt-5 flex items-center justify-between">
+                        <p className="text-xs text-slate-400">
+                            <span className="font-medium text-slate-500">Tip:</span> Payload must be valid JSON
+                        </p>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="btn-primary"
+                        >
+                            {loading ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    Creating…
+                                </>
+                            ) : (
+                                <>
+                                    <FaBolt className="text-xs" />
+                                    Create Signal
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
