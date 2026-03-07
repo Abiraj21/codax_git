@@ -1,11 +1,18 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { HiOutlineChartBar } from "react-icons/hi";
 import Sidebar from "./components/sidebar";
+import Header from "./components/Header";
 import SignalForm from "./components/signalForm";
 import SignalList from "./components/signalList";
 
 const API = "http://localhost:8000/api";
+
+// Deduplicate an array of objects by a key
+function dedupeById(arr) {
+  const map = new Map();
+  arr.forEach((item) => map.set(item.id, item));
+  return Array.from(map.values());
+}
 
 function App() {
   const [accounts, setAccounts] = useState([]);
@@ -14,44 +21,55 @@ function App() {
   const [filterType, setFilterType] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [loadingSignals, setLoadingSignals] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Load accounts on mount
+  // Load accounts on mount — deduplicate to guard against StrictMode double-invoke
   useEffect(() => {
     axios
       .get(`${API}/accounts`)
-      .then((res) => setAccounts(res.data))
+      .then((res) => setAccounts(dedupeById(res.data)))
       .catch((err) => console.error("Failed to load accounts:", err));
   }, []);
 
-  // Load signals whenever account or filters change
+  // Load signals whenever account or filters change — AbortController prevents stale responses
   const loadSignals = useCallback(() => {
+    const controller = new AbortController();
+
     if (!selectedAccount) {
       setLoadingSignals(true);
       const params = {};
       if (filterType) params.type = filterType;
       if (filterStatus) params.status = filterStatus;
       axios
-        .get(`${API}/signals`, { params })
-        .then((res) => setSignals(res.data))
-        .catch((err) => console.error("Failed to load signals:", err))
+        .get(`${API}/signals`, { params, signal: controller.signal })
+        .then((res) => setSignals(dedupeById(res.data)))
+        .catch((err) => {
+          if (!axios.isCancel(err)) console.error("Failed to load signals:", err);
+        })
         .finally(() => setLoadingSignals(false));
     } else {
       setLoadingSignals(true);
       axios
-        .get(`${API}/accounts/${selectedAccount.id}/signals`)
+        .get(`${API}/accounts/${selectedAccount.id}/signals`, { signal: controller.signal })
         .then((res) => {
-          let data = res.data;
+          let data = dedupeById(res.data);
           if (filterType) data = data.filter((s) => s.type === filterType);
           if (filterStatus) data = data.filter((s) => s.status === filterStatus);
           setSignals(data);
         })
-        .catch((err) => console.error("Failed to load signals:", err))
+        .catch((err) => {
+          if (!axios.isCancel(err)) console.error("Failed to load signals:", err);
+        })
         .finally(() => setLoadingSignals(false));
     }
+
+    // Return cleanup so the effect can abort in-flight requests
+    return () => controller.abort();
   }, [selectedAccount, filterType, filterStatus]);
 
   useEffect(() => {
-    loadSignals();
+    const cleanup = loadSignals();
+    return cleanup;
   }, [loadSignals]);
 
   const handleSelectAccount = (account) => {
@@ -59,6 +77,21 @@ function App() {
     setFilterType("");
     setFilterStatus("");
   };
+
+  // Filter signals by search query (matches account name or payload content)
+  const displayedSignals = searchQuery.trim()
+    ? signals.filter((s) => {
+      const q = searchQuery.toLowerCase();
+      const accountName =
+        accounts.find((a) => a.id === s.account_id)?.name?.toLowerCase() || "";
+      const payloadStr = JSON.stringify(s.payload || {}).toLowerCase();
+      return (
+        accountName.includes(q) ||
+        payloadStr.includes(q) ||
+        s.type?.toLowerCase().includes(q)
+      );
+    })
+    : signals;
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans">
@@ -73,39 +106,16 @@ function App() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
 
-        {/* ─── Top Header Bar ─────────────────── */}
-        <header className="bg-white border-b border-slate-100 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            {/* Breadcrumb-style context */}
-            <div className="flex items-center gap-2 text-sm text-slate-400">
-              <HiOutlineChartBar className="text-signal-500 text-base" />
-              <span
-                className="hover:text-slate-700 cursor-pointer transition-colors"
-                onClick={() => handleSelectAccount(selectedAccount || {})}
-              >
-                All Signals
-              </span>
-              {selectedAccount && (
-                <>
-                  <span className="text-slate-300">/</span>
-                  <span className="text-slate-700 font-semibold">
-                    {selectedAccount.name}
-                  </span>
-                </>
-              )}
-            </div>
-          </div>
+        {/* ─── New Premium Header ─────────────────── */}
+        <Header
+          signalCount={signals.length}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          selectedAccount={selectedAccount}
+          onSelectAccount={handleSelectAccount}
+        />
 
-          {/* Right side: signal count pill */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">Total signals:</span>
-            <span className="bg-signal-100 text-signal-700 text-xs font-bold px-2.5 py-1 rounded-full">
-              {signals.length}
-            </span>
-          </div>
-        </header>
-
-        {/* ─── Page Content ───────────────────── */}
+        {/* ─── Page Content ───────────────────────── */}
         <main className="flex-1 p-8 overflow-y-auto">
           <div className="max-w-5xl mx-auto">
 
@@ -118,7 +128,7 @@ function App() {
               </h1>
               <p className="text-sm text-slate-500 mt-1">
                 {selectedAccount
-                  ? `Viewing signals for ${selectedAccount.name}. Click the account again in the sidebar to deselect.`
+                  ? `Viewing signals for ${selectedAccount.name}. Click the account again to deselect.`
                   : "Showing all signals across accounts. Select an account from the sidebar to filter."}
               </p>
             </div>
@@ -140,7 +150,7 @@ function App() {
               </div>
             ) : (
               <SignalList
-                signals={signals}
+                signals={displayedSignals}
                 onArchive={loadSignals}
                 filterType={filterType}
                 filterStatus={filterStatus}

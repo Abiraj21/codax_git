@@ -1,30 +1,15 @@
 import React from "react";
-import { FaBolt, FaCircle } from "react-icons/fa";
+import { FaCircle } from "react-icons/fa";
 import { HiOutlineChevronRight } from "react-icons/hi";
 
 function Sidebar({ accounts, selectedAccount, onSelectAccount }) {
     return (
         <aside className="w-64 bg-white border-r border-slate-200 shadow-sidebar min-h-screen flex flex-col">
 
-            {/* ─── Brand Header ─────────────────────── */}
-            <div className="px-5 py-5 border-b border-slate-100">
-                <div className="flex items-center gap-3 mb-3">
-                    {/* Logo blob */}
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-signal-500 to-brand-600 flex items-center justify-center shadow-sm flex-shrink-0">
-                        <FaBolt className="text-white text-sm" />
-                    </div>
-                    <div>
-                        <h2 className="text-sm font-bold text-slate-900 leading-tight">
-                            Signal Dashboard
-                        </h2>
-                        <p className="text-[10px] text-slate-400 font-medium">
-                            Marketing Intelligence
-                        </p>
-                    </div>
-                </div>
-
+            {/* ─── Account Navigation ────────────────── */}
+            <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
                 {/* Live status pill */}
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 border border-emerald-100 rounded-lg w-fit">
+                <div className="flex items-center gap-1.5 px-2.5 py-2 mb-3">
                     <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -33,10 +18,7 @@ function Sidebar({ accounts, selectedAccount, onSelectAccount }) {
                         {accounts.length} Accounts Live
                     </span>
                 </div>
-            </div>
 
-            {/* ─── Account Navigation ────────────────── */}
-            <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5">
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 pb-2">
                     Accounts
                 </p>
@@ -88,7 +70,7 @@ function Sidebar({ accounts, selectedAccount, onSelectAccount }) {
                         <p className="text-[10px] text-slate-400">© 2025 · Real-time signals</p>
                     </div>
                     <span className="text-[10px] bg-white border border-slate-200 text-slate-500 px-2 py-1 rounded-lg font-medium">
-                        v1.0
+                        v1.1
                     </span>
                 </div>
             </div>

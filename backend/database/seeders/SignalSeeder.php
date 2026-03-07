@@ -9,28 +9,31 @@ use App\Models\Account;
 
 class SignalSeeder extends Seeder
 {
-    
+
     public function run()
     {
         $accounts = Account::all();
         foreach ($accounts as $account) {
-            Signal::create([
+            Signal::firstOrCreate([
                 'account_id' => $account->id,
                 'type' => 'intent',
+            ], [
                 'status' => 'active',
                 'payload' => ['page' => 'home', 'clicked' => true]
             ]);
 
-            Signal::create([
+            Signal::firstOrCreate([
                 'account_id' => $account->id,
                 'type' => 'web_visit',
+            ], [
                 'status' => 'active',
                 'payload' => ['page' => 'pricing', 'clicked' => false]
             ]);
 
-            Signal::create([
+            Signal::firstOrCreate([
                 'account_id' => $account->id,
                 'type' => 'purchase',
+            ], [
                 'status' => 'archived',
                 'payload' => ['amount' => 199, 'currency' => 'USD']
             ]);

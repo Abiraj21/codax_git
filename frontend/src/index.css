@@ -7,7 +7,10 @@
 
 /* ─── Base overrides ─────────────────────────────────────── */
 @layer base {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
@@ -23,9 +26,11 @@
     width: 5px;
     height: 5px;
   }
+
   ::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
+
   ::-webkit-scrollbar-thumb {
     @apply bg-slate-200 rounded-full hover:bg-slate-300;
   }
@@ -36,9 +41,7 @@
 
   /* ── Cards ───────────────────────────── */
   .card {
-    @apply bg-white rounded-2xl border border-slate-100 
-           shadow-card hover:shadow-card-hover 
-           transition-all duration-300;
+    @apply bg-white rounded-2xl border border-slate-100 shadow-card hover:shadow-card-hover transition-all duration-300;
   }
 
   .card-flat {
@@ -47,45 +50,24 @@
 
   /* ── Buttons ─────────────────────────── */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2
-           px-5 py-2.5 rounded-xl text-sm font-semibold text-white
-           bg-gradient-to-r from-signal-600 to-brand-600
-           hover:from-signal-700 hover:to-brand-700
-           hover:shadow-btn-glow active:scale-[0.98]
-           transition-all duration-200
-           focus:outline-none focus:ring-2 focus:ring-signal-400 focus:ring-offset-2
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-signal-600 to-brand-600 hover:from-signal-700 hover:to-brand-700 hover:shadow-btn-glow active:scale-[0.98] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-signal-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2
-           px-4 py-2 rounded-xl text-sm font-medium
-           bg-slate-100 text-slate-700
-           hover:bg-slate-200 active:scale-[0.98]
-           transition-all duration-200
-           focus:outline-none focus:ring-2 focus:ring-slate-300;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-[0.98] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-1.5
-           px-3 py-1.5 rounded-lg text-sm font-medium
-           text-slate-500 hover:text-signal-600 hover:bg-signal-50
-           transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-signal-600 hover:bg-signal-50 transition-all duration-200;
   }
 
   .btn-danger-ghost {
-    @apply inline-flex items-center justify-center
-           p-2 rounded-lg text-slate-400
-           hover:text-red-500 hover:bg-red-50
-           transition-all duration-200
-           focus:outline-none focus:ring-2 focus:ring-red-300
-           disabled:opacity-40 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-300 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   /* ── Badges ──────────────────────────── */
   .badge {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-1 
-           rounded-full text-xs font-semibold;
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold;
   }
 
   .badge-active {
@@ -110,10 +92,7 @@
 
   /* ── Form Inputs ─────────────────────── */
   .input-field {
-    @apply w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5
-           text-sm text-slate-800 placeholder-slate-400
-           focus:outline-none focus:ring-2 focus:ring-signal-400 focus:border-transparent
-           transition-all duration-200;
+    @apply w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-signal-400 focus:border-transparent transition-all duration-200;
   }
 
   .input-label {
@@ -122,15 +101,11 @@
 
   /* ── Sidebar ─────────────────────────── */
   .sidebar-link {
-    @apply w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl 
-           text-sm font-medium text-slate-600
-           hover:bg-slate-100 hover:text-slate-900
-           transition-all duration-200;
+    @apply w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200;
   }
 
   .sidebar-link-active {
-    @apply bg-signal-50 text-signal-700 border-l-2 border-signal-600
-           font-semibold;
+    @apply bg-signal-50 text-signal-700 border-l-2 border-signal-600 font-semibold;
   }
 
   /* ── Section Header ─────────────────── */
@@ -139,21 +114,33 @@
   }
 
   .section-header-icon {
-    @apply w-9 h-9 rounded-xl flex items-center justify-center 
-           bg-gradient-to-br from-signal-500 to-brand-600 
-           text-white shadow-sm;
+    @apply w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-signal-500 to-brand-600 text-white shadow-sm;
   }
 }
 
 /* ─── Custom Animations ──────────────────────────────────── */
 @keyframes slideIn {
-  from { transform: translateX(-10px); opacity: 0; }
-  to   { transform: translateX(0);     opacity: 1; }
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fadeUp {
-  from { transform: translateY(8px); opacity: 0; }
-  to   { transform: translateY(0);   opacity: 1; }
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .slide-in {
@@ -162,4 +149,20 @@
 
 .fade-up {
   animation: fadeUp 0.3s ease-out both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.18s ease-out both;
 }
