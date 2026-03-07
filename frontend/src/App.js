@@ -4,6 +4,22 @@ import Sidebar from "./components/sidebar";
 import Header from "./components/Header";
 import SignalForm from "./components/signalForm";
 import SignalList from "./components/signalList";
+import Visuals from "./components/Visuals";
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+import toast, { Toaster } from 'react-hot-toast';
+
+window.Pusher = Pusher;
+
+window.Echo = new Echo({
+  broadcaster: 'reverb',
+  key: "s1chube6wkxw4fggrpua",
+  wsHost: "localhost",
+  wsPort: 8080,
+  wssPort: 8080,
+  forceTLS: false,
+  enabledTransports: ['ws', 'wss'],
+});
 
 const API = "http://localhost:8000/api";
 
@@ -15,6 +31,7 @@ function dedupeById(arr) {
 }
 
 function App() {
+  const [activeTab, setActiveTab] = useState('home');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [signals, setSignals] = useState([]);
@@ -72,6 +89,47 @@ function App() {
     return cleanup;
   }, [loadSignals]);
 
+  // Listen for real-time broadcasts
+  useEffect(() => {
+    const channel = window.Echo.channel('signals');
+
+    channel.listen('SignalCreated', (e) => {
+      toast.success('New Signal Received!', {
+        style: {
+          borderRadius: '12px',
+          background: '#1e293b',
+          color: '#f8fafc',
+          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        },
+        iconTheme: {
+          primary: '#10b981',
+          secondary: '#1e293b',
+        },
+      });
+      loadSignals();
+    });
+
+    channel.listen('SignalArchived', (e) => {
+      toast.success('Signal Archived.', {
+        style: {
+          borderRadius: '12px',
+          background: '#1e293b',
+          color: '#f8fafc',
+          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        },
+        iconTheme: {
+          primary: '#8b5cf6',
+          secondary: '#1e293b',
+        },
+      });
+      loadSignals();
+    });
+
+    return () => {
+      window.Echo.leaveChannel('signals');
+    };
+  }, [loadSignals]);
+
   const handleSelectAccount = (account) => {
     setSelectedAccount((prev) => (prev?.id === account.id ? null : account));
     setFilterType("");
@@ -94,23 +152,26 @@ function App() {
     : signals;
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans">
+    <div className="flex flex-col h-screen bg-slate-50 font-sans">
+      <Toaster position="bottom-right" reverseOrder={false} />
 
-      {/* Sidebar */}
-      <Sidebar
-        accounts={accounts}
+      {/* ─── New Premium Header ─────────────────── */}
+      <Header
+        signalCount={signals.length}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
         selectedAccount={selectedAccount}
         onSelectAccount={handleSelectAccount}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
       />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden">
 
-        {/* ─── New Premium Header ─────────────────── */}
-        <Header
-          signalCount={signals.length}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
+        {/* Sidebar */}
+        <Sidebar
+          accounts={accounts}
           selectedAccount={selectedAccount}
           onSelectAccount={handleSelectAccount}
         />
@@ -133,30 +194,37 @@ function App() {
               </p>
             </div>
 
-            {/* Signal Creation Form */}
-            <SignalForm
-              accounts={accounts}
-              onSignalCreated={loadSignals}
-              selectedAccount={selectedAccount}
-            />
+            {/* Main Tabs Logic */}
+            {activeTab === 'home' ? (
+              <>
+                {/* Signal Creation Form */}
+                <SignalForm
+                  accounts={accounts}
+                  onSignalCreated={loadSignals}
+                  selectedAccount={selectedAccount}
+                />
 
-            {/* Signal List */}
-            {loadingSignals ? (
-              <div className="card px-6 py-16 text-center">
-                <div className="flex items-center justify-center gap-3 text-slate-400 text-sm">
-                  <div className="w-5 h-5 border-2 border-signal-400 border-t-transparent rounded-full animate-spin"></div>
-                  Loading signals…
-                </div>
-              </div>
+                {/* Signal List */}
+                {loadingSignals ? (
+                  <div className="card px-6 py-16 text-center">
+                    <div className="flex items-center justify-center gap-3 text-slate-400 text-sm">
+                      <div className="w-5 h-5 border-2 border-signal-400 border-t-transparent rounded-full animate-spin"></div>
+                      Loading signals…
+                    </div>
+                  </div>
+                ) : (
+                  <SignalList
+                    signals={displayedSignals}
+                    onArchive={loadSignals}
+                    filterType={filterType}
+                    filterStatus={filterStatus}
+                    onFilterTypeChange={setFilterType}
+                    onFilterStatusChange={setFilterStatus}
+                  />
+                )}
+              </>
             ) : (
-              <SignalList
-                signals={displayedSignals}
-                onArchive={loadSignals}
-                filterType={filterType}
-                filterStatus={filterStatus}
-                onFilterTypeChange={setFilterType}
-                onFilterStatusChange={setFilterStatus}
-              />
+              <Visuals signals={displayedSignals} accounts={accounts} />
             )}
 
           </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { FaBolt, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import { HiOutlinePlusCircle } from "react-icons/hi";
+import toast from 'react-hot-toast';
 
 const SIGNAL_TYPES = ["intent", "web_visit", "purchase"];
 
@@ -53,6 +54,7 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
                 payload: payloadObj,
             });
             setSuccess("Signal created successfully!");
+            toast.success("Signal created successfully!");
             onSignalCreated();
             setForm({
                 account_id: selectedAccount ? selectedAccount.id.toString() : "",
@@ -63,6 +65,7 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
             setTimeout(() => setSuccess(""), 4000);
         } catch (err) {
             setError(err.response?.data?.message || "Failed to create signal.");
+            toast.error("Failed to create signal.");
         } finally {
             setLoading(false);
         }

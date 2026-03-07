@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Signal;
+use App\Events\SignalCreated;
+use App\Events\SignalArchived;
 use Illuminate\Http\Request;
 
 class SignalController extends Controller
@@ -24,7 +26,9 @@ class SignalController extends Controller
             'status' => 'nullable|in:active,archived',
             'payload' => 'nullable|array',
         ]);
-        return response()->json(Signal::create($validated), 201);
+        $signal = Signal::create($validated);
+        broadcast(new SignalCreated($signal));
+        return response()->json($signal, 201);
     }
 
     public function archive($id)
@@ -32,6 +36,7 @@ class SignalController extends Controller
         $signal = Signal::findOrFail($id);
         $signal->status = 'archived';
         $signal->save();
+        broadcast(new SignalArchived($signal));
         return response()->json(['message' => 'Archived']);
     }
 

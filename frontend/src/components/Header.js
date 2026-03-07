@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaBolt, FaSearch, FaCog, FaUserEdit, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaBolt, FaSearch, FaUserCircle, FaUserEdit, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import { HiOutlineChartBar } from "react-icons/hi";
 
-function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onSelectAccount }) {
+function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onSelectAccount, activeTab, setActiveTab }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -18,18 +18,18 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
     }, []);
 
     return (
-        <header className="bg-white border-b border-slate-100 px-6 py-0 flex items-center justify-between sticky top-0 z-30 h-16 shadow-sm">
+        <header className="bg-white border-b border-slate-100 px-6 py-0 flex items-center justify-between sticky top-0 z-30 h-16 shadow">
 
             {/* ── LEFT: CodeX Brand ── */}
             <div className="flex items-center gap-3 flex-shrink-0">
                 {/* Logo */}
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-signal-500 to-brand-600 flex items-center justify-center shadow-sm flex-shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-violet-500 from-signal-500 to-brand-600 flex items-center justify-center shadow-sm flex-shrink-0">
                     <FaBolt className="text-white text-sm" />
                 </div>
                 {/* Wordmark */}
                 <div className="flex flex-col leading-none">
                     <span className="text-lg font-extrabold text-slate-900 tracking-tight">
-                        Code<span className="text-signal-500">X</span>
+                        Codax
                     </span>
                     <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest">
                         Signal Intelligence
@@ -54,9 +54,11 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                 </div>
             </div>
 
-            {/* ── CENTER: Search Bar ── */}
-            <div className="flex-1 max-w-md mx-6">
-                <div className="relative">
+            {/* ── CENTER: Navigation & Search ── */}
+            <div className="flex flex-1 items-center justify-center gap-6 max-w-3xl mx-6 hidden md:flex">
+
+                {/* ── Search Bar ── */}
+                <div className="relative w-full max-w-sm">
                     <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none" />
                     <input
                         type="text"
@@ -79,8 +81,34 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                 </div>
             </div>
 
+            <div>
+                    {/* ── Navigation Tabs ── */}
+                <div className="flex bg-slate-100 p-1 rounded-xl w-56 flex-shrink-0">
+                    <button
+                        onClick={() => setActiveTab && setActiveTab('home')}
+                        className={`flex-1 flex justify-center py-2 text-sm font-medium rounded-lg transition-all duration-200 ${activeTab === 'home'
+                            ? 'bg-white text-slate-800 shadow-sm'
+                            : 'text-slate-500 hover:text-slate-700'
+                            }`}
+                    >
+                        Home
+                    </button>
+                    <button
+                        onClick={() => setActiveTab && setActiveTab('visuals')}
+                        className={`flex-1 flex justify-center py-2 text-sm font-medium rounded-lg transition-all duration-200 ${activeTab === 'visuals'
+                            ? 'bg-white text-slate-800 shadow-sm'
+                            : 'text-slate-500 hover:text-slate-700'
+                            }`}
+                    >
+                        Visuals
+                    </button>
+                </div>
+            </div>
+
             {/* ── RIGHT: Signal Count + Settings ── */}
             <div className="flex items-center gap-3 flex-shrink-0">
+
+                
 
                 {/* Signal Count Pill */}
                 <div className="hidden sm:flex items-center gap-2">
@@ -101,7 +129,7 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                             }`}
                         title="Settings"
                     >
-                        <FaCog className={`text-sm transition-transform duration-300 ${dropdownOpen ? "rotate-90" : ""}`} />
+                        <FaUserCircle className={`text-sm transition-transform duration-300 ${dropdownOpen ? "text-signal-500" : ""}`} />
                     </button>
 
                     {/* Dropdown Menu */}
