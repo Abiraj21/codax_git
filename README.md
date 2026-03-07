@@ -2,6 +2,13 @@
 
 A full-stack application designed to manage business accounts and their marketing signals. This project features a robust Laravel backend and a dynamic React frontend.
 
+## ✨ Key Features
+- **Interactive Data Visualizations:** Integrated charts and graphs to visualize signal trends and distributions over time.
+- **Theme Customization:** Seamless Light and Dark mode toggling for a comfortable viewing experience.
+- **Real-time Notifications:** Live updates using Laravel Echo/Pusher when signals are created or archived, complete with stylish toast alerts.
+- **Advanced Search & Filtering:** Quickly find signals by type, account, payload, or status with instant, client-side filtering.
+- **Modern UI:** A polished, responsive interface built with Tailwind CSS, featuring custom modals, interactive sidebars, and fluid animations.
+
 ## 🚀 How to Run Locally
 
 ### Prerequisites
@@ -87,7 +94,5 @@ The backend requires a `.env` file. Key variables include:
 
 If this were a production feature, I would add:
 1.  **Authentication & Authorization**: Implement Laravel Sanctum or Passport for secure API access and role-based permissions (e.g., Admin vs. User).
-2.  **Advanced Analytics**: Integrated charts and graphs to visualize signal trends over time.
-3.  **Real-time Notifications**: Using Laravel Reverb or Pusher for live updates when signals are created or updated.
-4.  **CI/CD Pipeline**: Automated testing and deployment workflows using GitHub Actions.
-5.  **Enhanced Search/Filtering**: Implement Laravel Scout for full-text search capabilities across signals and accounts.
+2.  **CI/CD Pipeline**: Automated testing and deployment workflows using GitHub Actions.
+3.  **Production Database**: Migrate from SQLite to PostgreSQL/MySQL for better concurrency, scalability, and robust data integrity constraints.
