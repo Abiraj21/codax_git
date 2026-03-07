@@ -51,7 +51,9 @@ function Sidebar({ accounts, selectedAccount, onSelectAccount }) {
                                     {account.name.charAt(0).toUpperCase()}
                                 </div>
 
-                                <span className="flex-1 text-left text-blue-50 dark:text-slate-300 group-hover:text-blue-900 dark:group-hover:text-black truncate">{account.name}</span>
+                                <span className={`flex-1 text-left truncate ${isActive ? 'text-blue-900 dark:text-blue-400' : 'text-blue-50 dark:text-slate-300 group-hover:text-blue-900 dark:group-hover:text-black'}`}>
+                                    {account.name}
+                                </span>
 
                                 {isActive && (
                                     <HiOutlineChevronRight className="text-white dark:text-blue-400 text-xs flex-shrink-0" />
