@@ -74,7 +74,7 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
     return (
         <div className="card mb-6 overflow-hidden">
             {/* Gradient top accent bar */}
-            <div className="h-1 w-full bg-gradient-to-r from-signal-500 via-brand-500 to-signal-400" />
+            <div className="h-1 w-full bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400" />
 
             <div className="px-6 py-5">
                 {/* Section Header */}
@@ -83,8 +83,8 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
                         <HiOutlinePlusCircle className="text-white text-lg" />
                     </div>
                     <div>
-                        <h3 className="text-base font-bold text-slate-900">Create New Signal</h3>
-                        <p className="text-xs text-slate-400 mt-0.5">
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white">Create New Signal</h3>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                             Select an account, choose a signal type, and define the payload.
                         </p>
                     </div>
@@ -92,13 +92,13 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
 
                 {/* Alerts */}
                 {error && (
-                    <div className="mb-4 flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm fade-up">
+                    <div className="mb-4 flex items-start gap-2.5 p-3.5 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-xl text-sm fade-up">
                         <FaExclamationCircle className="text-red-500 flex-shrink-0 mt-0.5" />
                         {error}
                     </div>
                 )}
                 {success && (
-                    <div className="mb-4 flex items-start gap-2.5 p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-sm fade-up">
+                    <div className="mb-4 flex items-start gap-2.5 p-3.5 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 rounded-xl text-sm fade-up">
                         <FaCheckCircle className="text-emerald-500 flex-shrink-0 mt-0.5" />
                         {success}
                     </div>
@@ -157,8 +157,8 @@ function SignalForm({ accounts, onSignalCreated, selectedAccount }) {
 
                     {/* Submit */}
                     <div className="mt-5 flex items-center justify-between">
-                        <p className="text-xs text-slate-400">
-                            <span className="font-medium text-slate-500">Tip:</span> Payload must be valid JSON
+                        <p className="text-xs text-slate-400 dark:text-slate-500">
+                            <span className="font-medium text-slate-500 dark:text-slate-400">Tip:</span> Payload must be valid JSON
                         </p>
                         <button
                             type="submit"

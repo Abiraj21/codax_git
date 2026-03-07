@@ -8,23 +8,23 @@ import toast from 'react-hot-toast';
 
 const TYPE_CONFIG = {
     intent: {
-        bg: "bg-blue-50",
-        text: "text-blue-700",
-        border: "border-blue-200",
+        bg: "bg-blue-50 dark:bg-blue-900/30",
+        text: "text-blue-700 dark:text-blue-400",
+        border: "border-blue-200 dark:border-blue-800",
         icon: "🎯",
         label: "Intent",
     },
     web_visit: {
-        bg: "bg-violet-50",
-        text: "text-violet-700",
-        border: "border-violet-200",
+        bg: "bg-violet-50 dark:bg-violet-900/30",
+        text: "text-violet-700 dark:text-violet-400",
+        border: "border-violet-200 dark:border-violet-800",
         icon: "🌐",
         label: "Web Visit",
     },
     purchase: {
-        bg: "bg-emerald-50",
-        text: "text-emerald-700",
-        border: "border-emerald-200",
+        bg: "bg-emerald-50 dark:bg-emerald-900/30",
+        text: "text-emerald-700 dark:text-emerald-400",
+        border: "border-emerald-200 dark:border-emerald-800",
         icon: "💰",
         label: "Purchase",
     },
@@ -32,17 +32,17 @@ const TYPE_CONFIG = {
 
 const STATUS_CONFIG = {
     active: {
-        bg: "bg-emerald-50",
-        text: "text-emerald-700",
-        border: "border-emerald-200",
+        bg: "bg-emerald-50 dark:bg-emerald-900/30",
+        text: "text-emerald-700 dark:text-emerald-400",
+        border: "border-emerald-200 dark:border-emerald-800",
         dot: "bg-emerald-500",
         label: "Active",
         pulse: true,
     },
     archived: {
-        bg: "bg-slate-100",
-        text: "text-slate-500",
-        border: "border-slate-200",
+        bg: "bg-slate-100 dark:bg-slate-800",
+        text: "text-slate-500 dark:text-slate-400",
+        border: "border-slate-200 dark:border-slate-700",
         dot: "bg-slate-400",
         label: "Archived",
         pulse: false,
@@ -91,7 +91,7 @@ function SignalList({
         <div className="card overflow-hidden">
 
             {/* ─── Filter Bar ─────────────────────────── */}
-            <div className="px-6 py-3.5 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center gap-3">
+            <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-3">
 
                 {/* Label */}
                 <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
@@ -104,7 +104,7 @@ function SignalList({
                     <select
                         value={filterType}
                         onChange={(e) => onFilterTypeChange(e.target.value)}
-                        className="appearance-none bg-white border border-slate-200 rounded-lg pl-3.5 pr-8 py-2 text-sm text-slate-700
+                        className="appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-3.5 pr-8 py-2 text-sm text-slate-700 dark:text-slate-200
                        focus:outline-none focus:ring-2 focus:ring-signal-400 min-w-[140px] cursor-pointer"
                     >
                         <option value="">All Types</option>
@@ -120,7 +120,7 @@ function SignalList({
                     <select
                         value={filterStatus}
                         onChange={(e) => onFilterStatusChange(e.target.value)}
-                        className="appearance-none bg-white border border-slate-200 rounded-lg pl-3.5 pr-8 py-2 text-sm text-slate-700
+                        className="appearance-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-3.5 pr-8 py-2 text-sm text-slate-700 dark:text-slate-200
                        focus:outline-none focus:ring-2 focus:ring-signal-400 min-w-[140px] cursor-pointer"
                     >
                         <option value="">All Statuses</option>
@@ -152,10 +152,10 @@ function SignalList({
             {/* ─── Empty State ────────────────────────── */}
             {signals.length === 0 ? (
                 <div className="px-6 py-20 text-center fade-up">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-5">
-                        <FaInbox className="text-slate-400 text-3xl" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 mb-5">
+                        <FaInbox className="text-slate-400 dark:text-slate-500 text-3xl" />
                     </div>
-                    <h3 className="text-slate-800 font-semibold text-base mb-1.5">No signals found</h3>
+                    <h3 className="text-slate-800 dark:text-slate-200 font-semibold text-base mb-1.5">No signals found</h3>
                     <p className="text-slate-400 text-sm mb-5 max-w-xs mx-auto">
                         {hasFilters
                             ? "Try adjusting your filters or clearing them to see all signals."
@@ -174,7 +174,7 @@ function SignalList({
             ) : (
 
                 /* ─── Signal Rows ──────────────────────── */
-                <ul className="divide-y divide-slate-50">
+                <ul className="divide-y divide-slate-50 dark:divide-slate-800/50">
                     {signals.map((signal, index) => {
                         const typeConf = TYPE_CONFIG[signal.type] || { bg: "bg-slate-100", text: "text-slate-600", border: "border-slate-200", icon: "📌", label: signal.type };
                         const statusConf = STATUS_CONFIG[signal.status] || { bg: "bg-slate-100", text: "text-slate-500", border: "border-slate-200", dot: "bg-slate-400", label: signal.status, pulse: false };
@@ -184,7 +184,7 @@ function SignalList({
                         return (
                             <li
                                 key={signal.id}
-                                className="px-6 py-4 hover:bg-slate-50/70 transition-colors duration-150 slide-in"
+                                className="px-6 py-4 hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors duration-150 slide-in"
                                 style={{ animationDelay: `${index * 30}ms` }}
                             >
                                 <div className="flex items-start gap-4">
@@ -205,7 +205,7 @@ function SignalList({
                                             className="group flex items-start gap-2 text-left w-full"
                                         >
                                             <code className={`text-xs rounded-lg px-2.5 py-1.5 font-mono leading-relaxed
-                        bg-slate-100 text-slate-700 group-hover:bg-slate-200 transition-colors
+                        bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors
                         ${isExpanded ? "whitespace-pre-wrap break-all" : "truncate max-w-xs"}`}
                                             >
                                                 {isExpanded

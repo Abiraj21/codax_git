@@ -107,8 +107,8 @@ function Visuals({ signals, accounts = [] }) {
 
     if (signals.length === 0) {
         return (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 fade-up">
-                <div className="h-64 flex flex-col items-center justify-center text-slate-400">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 fade-up">
+                <div className="h-64 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
                     <p>No signals found to display.</p>
                 </div>
             </div>
@@ -121,8 +121,8 @@ function Visuals({ signals, accounts = [] }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Pie Chart Card */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                    <h2 className="text-lg font-bold text-slate-800 mb-6">Type Distribution</h2>
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
+                    <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6">Type Distribution</h2>
                     <div className="h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -148,8 +148,8 @@ function Visuals({ signals, accounts = [] }) {
                 </div>
 
                 {/* Bar Chart Card */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                    <h2 className="text-lg font-bold text-slate-800 mb-6">Signals per Account</h2>
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
+                    <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-6">Signals per Account</h2>
                     <div className="h-[300px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={barData} margin={{ top: 5, right: 30, left: -20, bottom: 5 }}>
@@ -166,18 +166,18 @@ function Visuals({ signals, accounts = [] }) {
             </div>
 
             {/* Bottom Row: Line Chart */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-                    <h2 className="text-lg font-bold text-slate-800">Activity Over Time</h2>
+                    <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">Activity Over Time</h2>
 
-                    <div className="flex bg-slate-100 p-1 rounded-lg">
+                    <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
                         {['hourly', 'daily', 'weekly'].map((tf) => (
                             <button
                                 key={tf}
                                 onClick={() => setLineTimeframeFilter(tf)}
                                 className={`px-4 py-1.5 text-xs font-medium rounded-md capitalize transition-colors ${lineTimeframeFilter === tf
-                                    ? 'bg-white text-slate-800 shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-700'
+                                    ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                                     }`}
                             >
                                 {tf}

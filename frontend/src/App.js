@@ -152,7 +152,7 @@ function App() {
     : signals;
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 font-sans">
+    <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100">
       <Toaster position="bottom-right" reverseOrder={false} />
 
       {/* ─── New Premium Header ─────────────────── */}
@@ -177,17 +177,17 @@ function App() {
         />
 
         {/* ─── Page Content ───────────────────────── */}
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main className="flex-1 p-8 overflow-y-auto bg-slate-50 dark:bg-slate-950 transition-colors">
           <div className="max-w-5xl mx-auto">
 
             {/* Page Title */}
             <div className="mb-7 fade-up">
-              <h1 className="text-2xl font-bold text-slate-900">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                 {selectedAccount
                   ? `${selectedAccount.name} — Signals`
                   : "All Signals"}
               </h1>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                 {selectedAccount
                   ? `Viewing signals for ${selectedAccount.name}. Click the account again to deselect.`
                   : "Showing all signals across accounts. Select an account from the sidebar to filter."}
