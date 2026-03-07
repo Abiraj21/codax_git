@@ -11,10 +11,10 @@ class AccountSeeder extends Seeder
 
     public function run()
     {
-        Account::create(['name' => 'Tesla']);
-        Account::create(['name' => 'Amazon']);
-        Account::create(['name' => 'Spotify']);
-        Account::create(['name' => 'Stripe']);
-        Account::create(['name' => 'Airbnb']);
+        Account::firstOrCreate(['name' => 'Tesla']);
+        Account::firstOrCreate(['name' => 'Amazon']);
+        Account::firstOrCreate(['name' => 'Spotify']);
+        Account::firstOrCreate(['name' => 'Stripe']);
+        Account::firstOrCreate(['name' => 'Airbnb']);
     }
 }
