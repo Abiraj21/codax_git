@@ -54,11 +54,8 @@ function App() {
 
     if (!selectedAccount) {
       setLoadingSignals(true);
-      const params = {};
-      if (filterType) params.type = filterType;
-      if (filterStatus) params.status = filterStatus;
       axios
-        .get(`${API}/signals`, { params, signal: controller.signal })
+        .get(`${API}/signals`, { signal: controller.signal })
         .then((res) => setSignals(dedupeById(res.data)))
         .catch((err) => {
           if (!axios.isCancel(err)) console.error("Failed to load signals:", err);
@@ -70,8 +67,6 @@ function App() {
         .get(`${API}/accounts/${selectedAccount.id}/signals`, { signal: controller.signal })
         .then((res) => {
           let data = dedupeById(res.data);
-          if (filterType) data = data.filter((s) => s.type === filterType);
-          if (filterStatus) data = data.filter((s) => s.status === filterStatus);
           setSignals(data);
         })
         .catch((err) => {
@@ -82,7 +77,7 @@ function App() {
 
     // Return cleanup so the effect can abort in-flight requests
     return () => controller.abort();
-  }, [selectedAccount, filterType, filterStatus]);
+  }, [selectedAccount]);
 
   useEffect(() => {
     const cleanup = loadSignals();
@@ -136,20 +131,27 @@ function App() {
     setFilterStatus("");
   };
 
-  // Filter signals by search query (matches account name or payload content)
-  const displayedSignals = searchQuery.trim()
-    ? signals.filter((s) => {
-      const q = searchQuery.toLowerCase();
-      const accountName =
-        accounts.find((a) => a.id === s.account_id)?.name?.toLowerCase() || "";
-      const payloadStr = JSON.stringify(s.payload || {}).toLowerCase();
-      return (
-        accountName.includes(q) ||
-        payloadStr.includes(q) ||
-        s.type?.toLowerCase().includes(q)
-      );
-    })
-    : signals;
+  // Filter signals by search query, type, and status
+  const displayedSignals = signals.filter((s) => {
+    // 1. Type Filter
+    if (filterType && s.type !== filterType) return false;
+
+    // 2. Status Filter
+    if (filterStatus && s.status !== filterStatus) return false;
+
+    // 3. Search Query Filter
+    if (!searchQuery.trim()) return true;
+
+    const q = searchQuery.toLowerCase();
+    const accountName = accounts.find((a) => a.id === s.account_id)?.name?.toLowerCase() || "";
+    const payloadStr = JSON.stringify(s.payload || {}).toLowerCase();
+
+    return (
+      accountName.includes(q) ||
+      payloadStr.includes(q) ||
+      s.type?.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100">
