@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaBolt, FaSearch, FaUserCircle, FaUserEdit, FaSignOutAlt, FaTimes, FaEllipsisV, FaMoon, FaSun } from "react-icons/fa";
 import { HiOutlineChartBar } from "react-icons/hi";
 
-function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onSelectAccount, activeTab, setActiveTab }) {
+function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onSelectAccount, activeTab, setActiveTab, onLogout }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -57,7 +57,7 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                 {/* Wordmark */}
                 <div className="flex flex-col leading-none">
                     <span className="text-lg font-extrabold text-blue-700 dark:text-white tracking-tight">
-                        Codax
+                        Grow <span className="text-2xl">+</span>
                     </span>
                     <span className="text-[9px] font-semibold text-blue-400 dark:text-slate-400 uppercase tracking-widest">
                         Signal Intelligence
@@ -65,8 +65,8 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                 </div>
 
                 {/* Breadcrumb divider + context */}
-                <div className="hidden md:flex items-center gap-2 ml-4 text-sm text-blue-400 dark:text-slate-400 pl-4 border-l border-blue-100 dark:border-slate-800">
-                    <HiOutlineChartBar className="text-blue-500 dark:text-white text-base" />
+                <div className="hidden md:flex items-center gap-2 ml-4 text-sm text-blue-700 dark:text-slate-400 pl-4 border-l border-blue-100 dark:border-slate-800">
+                    <HiOutlineChartBar className="text-blue-700 dark:text-white text-base" />
                     <span
                         className="hover:text-blue-600 dark:hover:text-slate-200 cursor-pointer transition-colors"
                         onClick={() => selectedAccount && onSelectAccount(selectedAccount)}
@@ -87,14 +87,14 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
 
                 {/* ── Search Bar ── */}
                 <div className="relative w-full max-w-sm">
-                    <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-400 dark:text-slate-500 text-xs pointer-events-none" />
+                    <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-600 dark:text-slate-500 text-xs pointer-events-none" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                         placeholder="Search signals by type, account, or payload…"
                         className="w-full pl-9 pr-9 py-2 text-sm bg-blue-50 dark:bg-slate-800 border border-transparent dark:border-slate-700 rounded-xl
-                       text-blue-900 dark:text-white placeholder-blue-300 dark:placeholder-slate-500
+                       text-blue-900 dark:text-white placeholder-blue-600 dark:placeholder-slate-500
                        focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500
                        transition-all duration-200"
                     />
@@ -194,6 +194,7 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                                 onClick={() => {
                                     setDropdownOpen(false);
                                     setLogoutModalOpen(true);
+                                    onLogout();
                                 }}
                             >
                                 <div className="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
@@ -201,6 +202,7 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                                 </div>
                                 <span className="font-medium">Logout</span>
                             </button>
+                            
                         </div>
                     )}
                 </div>
@@ -259,7 +261,7 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                                 </div>
                                 <div>
                                     <label className="input-label">Email Address</label>
-                                    <input type="email" className="input-field" defaultValue="user@codax.com" />
+                                    <input type="email" className="input-field" defaultValue="user@grow.com" />
                                 </div>
                             </div>
                         </div>
@@ -280,7 +282,7 @@ function Header({ signalCount, searchQuery, onSearchChange, selectedAccount, onS
                             </div>
                             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Sign Out</h3>
                             <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-                                Are you sure you want to log out of your Codax account?
+                                Are you sure you want to log out of your Grow account?
                             </p>
                             <div className="flex flex-col gap-3">
                                 <button onClick={() => setLogoutModalOpen(false)} className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 active:scale-[0.98] transition-all duration-200 shadow shadow-red-500/20">
