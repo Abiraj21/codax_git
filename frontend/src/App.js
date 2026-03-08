@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import SignalForm from "./components/signalForm";
 import SignalList from "./components/signalList";
 import Visuals from "./components/Visuals";
+import Login from "./components/login";  // ← Import Login component
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import toast, { Toaster } from 'react-hot-toast';
@@ -31,6 +32,9 @@ function dedupeById(arr) {
 }
 
 function App() {
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);  // ← New state
+  
   const [activeTab, setActiveTab] = useState('home');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -40,16 +44,36 @@ function App() {
   const [loadingSignals, setLoadingSignals] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Load accounts on mount — deduplicate to guard against StrictMode double-invoke
+  // Handle login
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    // Optional: Clear any sensitive data
+    setSelectedAccount(null);
+    setSignals([]);
+    setSearchQuery("");
+    setFilterType("");
+    setFilterStatus("");
+  };
+
+  // Load accounts on mount — only if authenticated
   useEffect(() => {
-    axios
-      .get(`${API}/accounts`)
-      .then((res) => setAccounts(dedupeById(res.data)))
-      .catch((err) => console.error("Failed to load accounts:", err));
-  }, []);
+    if (isAuthenticated) {
+      axios
+        .get(`${API}/accounts`)
+        .then((res) => setAccounts(dedupeById(res.data)))
+        .catch((err) => console.error("Failed to load accounts:", err));
+    }
+  }, [isAuthenticated]);
 
   // Load signals whenever account or filters change — AbortController prevents stale responses
   const loadSignals = useCallback(() => {
+    if (!isAuthenticated) return;  // Don't load if not authenticated
+    
     const controller = new AbortController();
 
     if (!selectedAccount) {
@@ -77,15 +101,17 @@ function App() {
 
     // Return cleanup so the effect can abort in-flight requests
     return () => controller.abort();
-  }, [selectedAccount]);
+  }, [selectedAccount, isAuthenticated]);
 
   useEffect(() => {
     const cleanup = loadSignals();
     return cleanup;
   }, [loadSignals]);
 
-  // Listen for real-time broadcasts
+  // Listen for real-time broadcasts - only if authenticated
   useEffect(() => {
+    if (!isAuthenticated) return;
+    
     const channel = window.Echo.channel('signals');
 
     channel.listen('SignalCreated', (e) => {
@@ -123,7 +149,7 @@ function App() {
     return () => {
       window.Echo.leaveChannel('signals');
     };
-  }, [loadSignals]);
+  }, [loadSignals, isAuthenticated]);
 
   const handleSelectAccount = (account) => {
     setSelectedAccount((prev) => (prev?.id === account.id ? null : account));
@@ -153,6 +179,12 @@ function App() {
     );
   });
 
+  // If not authenticated, show login page
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
+  // Otherwise show the main dashboard
   return (
     <div className="flex flex-col h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-800 dark:text-slate-100">
       <Toaster position="bottom-right" reverseOrder={false} />
@@ -166,6 +198,7 @@ function App() {
         onSelectAccount={handleSelectAccount}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onLogout={handleLogout}  // ← Pass logout handler
       />
 
       {/* Main Content Area */}
@@ -195,6 +228,8 @@ function App() {
                   : "Showing all signals across accounts. Select an account from the sidebar to filter."}
               </p>
             </div>
+
+            
 
             {/* Main Tabs Logic */}
             {activeTab === 'home' ? (
